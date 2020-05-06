@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movie.R;
 import com.example.movie.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public void onBindViewHolder( MoviesAdapter.MovieViewHolder holder, int position) {
         String image_url = IMAGE_URL_BASE_PATH + movies.get(position).getPosterPath();
 
-        Picasso.with(context).load(image_url).placeholder(android.R.drawable.sym_def_app_icon).error(android.R.drawable.sym_def_app_icon).into(holder.movieImage);
+        Picasso.get().load(image_url).placeholder(android.R.drawable.sym_def_app_icon).error(android.R.drawable.sym_def_app_icon).into(holder.movieImage);
         holder.movieTitle.setText(movies.get(position).getTitle());
         holder.data.setText(movies.get(position).getReleaseDate());
         holder.movieDescription.setText(movies.get(position).getOverview());
