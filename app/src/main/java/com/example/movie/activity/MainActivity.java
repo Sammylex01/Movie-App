@@ -4,11 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.movie.R;
+import com.example.movie.adapter.MoviesAdapter;
 import com.example.movie.model.Movie;
 import com.example.movie.model.MovieResponse;
 import com.example.movie.rest.MovieApiService;
@@ -48,25 +48,29 @@ public class MainActivity extends AppCompatActivity {
                     Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         }
 
+
+        MovieApiService movieApiService = retrofit.create(MovieApiService.class);
+        Call<MovieResponse> call = movieApiService.getTopRatedMovies(API_KEY);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+
+                if (response.code() == 200 && response.isSuccessful()) {
+                    List<Movie> movies = response.body().getResults();
+
+                    recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
+
+                    Log.d(TAG, "Number of movies recieved:" + movies.size());
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
+
     }
-
-    MovieApiService movieApiService = retrofit.create(MovieApiService.class);
-    Call<MovieResponse> call = movieApiService.getTopRatedMovies(API_KEY);
-    call.enqueue(new Callback<MovieResponse>()){
-        @Override
-        public void onResponse (Call <MovieResponse> call, Response <MovieResponse> response)
-
-    }
-    List<Movie> movies = response.body().getResults();
-
-    recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
-
-    Log.d(TAG, "Number of movies recieved:" + movies.size());{
-        @Override
-        public void onFailure(Call<MovieResponse> call, Throwable throwable)
-    }
-
-    Log.e(TAG, throwable.toString());
-    })
-  ;}
 }
